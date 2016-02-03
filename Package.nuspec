@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Data.Warehouse.Crawler</id>
+    <version>1.0.10</version>
+    <authors>Marcel Schneider</authors>
+    <owners>Marcel Schneider</owners>
+    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <projectUrl>https://github.com/LegendOfGIT/Nuget-Repository/tree/master/Data.Warehouse.Crawler/src/Data.Warehouse.Crawler</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Stellt Klassen für das Auslesen von Informationen aus dem Internet bereit</description>
+    <releaseNotes>
+		Version 1.0.10:
+		- Compilerfehler bei wiederholenden Kommandos korrigiert.
+		Version 1.0.9:
+		- Es werde nun mehr Uriinformationen automatisch ergänzt.
+		Version 1.0.8:
+		- Ergänzung unvollständiger Inhalte in "FindContent" ergänzt
+		Version 1.0.7:
+		- Unvollständige Inhalte werden nun nach dem Auslesen aus der Website ergänzt. (FindContent)
+		Version 1.0.6:
+		- Fehlerhaftes Leeren des Dictionaryeintrag aufgrund des Browsebefehl korrigiert.
+		Version 1.0.5:
+		- Mit dem Browsekommando, wird der Inhalt der Browsevariable wieder zurückgesetzt.
+	</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Collect Information Internet Web Crawler</tags>
+    <dependencies>
+      <dependency id="Data.Warehouse" version="1.0.8" />
+      <dependency id="Data.Web" version="1.0.2" />
+    </dependencies>
+  </metadata>
+</package>
