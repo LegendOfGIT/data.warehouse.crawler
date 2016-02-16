@@ -76,46 +76,6 @@
             <param name="readRootValueAsArray">if set to <c>true</c> the root object will be read as a JSON array.</param>
             <param name="dateTimeKindHandling">The <see cref="T:System.DateTimeKind" /> used when reading <see cref="T:System.DateTime"/> values from BSON.</param>
         </member>
-        <member name="M:Newtonsoft.Json.Bson.BsonReader.ReadAsBytes">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Byte"/>[].
-            </summary>
-            <returns>
-            A <see cref="T:System.Byte"/>[] or a null reference if the next JSON token is null. This method will return <c>null</c> at the end of an array.
-            </returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Bson.BsonReader.ReadAsDecimal">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
-            </summary>
-            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Bson.BsonReader.ReadAsInt32">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
-            </summary>
-            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Bson.BsonReader.ReadAsString">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.String"/>.
-            </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Bson.BsonReader.ReadAsDateTime">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
-            </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Bson.BsonReader.ReadAsDateTimeOffset">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
-            </summary>
-            <returns>
-            A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.
-            </returns>
-        </member>
         <member name="M:Newtonsoft.Json.Bson.BsonReader.Read">
             <summary>
             Reads the next JSON token from the stream.
@@ -1083,6 +1043,25 @@
             <summary>
             Causes child objects to be indented according to the <see cref="P:Newtonsoft.Json.JsonTextWriter.Indentation"/> and <see cref="P:Newtonsoft.Json.JsonTextWriter.IndentChar"/> settings.
             </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.IArrayPool`1">
+            <summary>
+            Provides an interface for using pooled arrays.
+            </summary>
+            <typeparam name="T">The array type content.</typeparam>
+        </member>
+        <member name="M:Newtonsoft.Json.IArrayPool`1.Rent(System.Int32)">
+            <summary>
+            Rent a array from the pool. This array must be returned when it is no longer needed.
+            </summary>
+            <param name="minimumLength">The minimum required length of the array. The returned array may be longer.</param>
+            <returns>The rented array from the pool. This array must be returned when it is no longer needed.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.IArrayPool`1.Return(`0[])">
+            <summary>
+            Return an array to the pool.
+            </summary>
+            <param name="array">The array that is being returned.</param>
         </member>
         <member name="T:Newtonsoft.Json.IJsonLineInfo">
             <summary>
@@ -2139,9 +2118,9 @@
         </member>
         <member name="P:Newtonsoft.Json.JsonPropertyAttribute.Order">
             <summary>
-            Gets or sets the order of serialization and deserialization of a member.
+            Gets or sets the order of serialization of a member.
             </summary>
-            <value>The numeric order of serialization or deserialization.</value>
+            <value>The numeric order of serialization.</value>
         </member>
         <member name="P:Newtonsoft.Json.JsonPropertyAttribute.Required">
             <summary>
@@ -2376,6 +2355,18 @@
             </summary>
             <returns>A <see cref="T:System.Byte"/>[] or a null reference if the next JSON token is null. This method will return <c>null</c> at the end of an array.</returns>
         </member>
+        <member name="M:Newtonsoft.Json.JsonReader.ReadAsDouble">
+            <summary>
+            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
+            </summary>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonReader.ReadAsBoolean">
+            <summary>
+            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
+            </summary>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
+        </member>
         <member name="M:Newtonsoft.Json.JsonReader.ReadAsDecimal">
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
@@ -2386,7 +2377,7 @@
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonReader.ReadAsDateTimeOffset">
             <summary>
@@ -2561,6 +2552,11 @@
             <summary>
             Gets or sets how type name writing and reading is handled by the serializer.
             </summary>
+            <remarks>
+            <see cref="P:Newtonsoft.Json.JsonSerializer.TypeNameHandling"/> should be used with caution when your application deserializes JSON from an external source.
+            Incoming types should be validated with a custom <see cref="T:System.Runtime.Serialization.SerializationBinder"/>
+            when deserializing with a value other than <c>TypeNameHandling.None</c>.
+            </remarks>
         </member>
         <member name="P:Newtonsoft.Json.JsonSerializer.TypeNameAssemblyFormat">
             <summary>
@@ -2871,7 +2867,7 @@
         </member>
         <member name="P:Newtonsoft.Json.JsonSerializerSettings.Converters">
             <summary>
-            Gets or sets a collection <see cref="T:Newtonsoft.Json.JsonConverter"/> that will be used during serialization.
+            Gets or sets a <see cref="T:Newtonsoft.Json.JsonConverter"/> collection that will be used during serialization.
             </summary>
             <value>The converters.</value>
         </member>
@@ -2885,6 +2881,11 @@
             <summary>
             Gets or sets how type name writing and reading is handled by the serializer.
             </summary>
+            <remarks>
+            <see cref="P:Newtonsoft.Json.JsonSerializerSettings.TypeNameHandling"/> should be used with caution when your application deserializes JSON from an external source.
+            Incoming types should be validated with a custom <see cref="T:System.Runtime.Serialization.SerializationBinder"/>
+            when deserializing with a value other than <c>TypeNameHandling.None</c>.
+            </remarks>
             <value>The type name handling.</value>
         </member>
         <member name="P:Newtonsoft.Json.JsonSerializerSettings.MetadataPropertyHandling">
@@ -3030,6 +3031,11 @@
             </summary>
             <param name="reader">The <c>TextReader</c> containing the XML data to read.</param>
         </member>
+        <member name="P:Newtonsoft.Json.JsonTextReader.ArrayPool">
+            <summary>
+            Gets or sets the reader's character buffer pool.
+            </summary>
+        </member>
         <member name="M:Newtonsoft.Json.JsonTextReader.Read">
             <summary>
             Reads the next JSON token from the stream.
@@ -3038,21 +3044,13 @@
             true if the next token was read successfully; false if there are no more tokens to read.
             </returns>
         </member>
-        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsBytes">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Byte"/>[].
-            </summary>
-            <returns>
-            A <see cref="T:System.Byte"/>[] or a null reference if the next JSON token is null. This method will return <c>null</c> at the end of an array.
-            </returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDecimal">
+        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsInt32">
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
             <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
-        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsInt32">
+        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDateTime">
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
@@ -3064,17 +3062,35 @@
             </summary>
             <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
-        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDateTime">
+        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsBytes">
+            <summary>
+            Reads the next JSON token from the stream as a <see cref="T:System.Byte"/>[].
+            </summary>
+            <returns>A <see cref="T:System.Byte"/>[] or a null reference if the next JSON token is null. This method will return <c>null</c> at the end of an array.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsBoolean">
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDateTimeOffset">
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.DateTimeOffset"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDecimal">
+            <summary>
+            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
+            </summary>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDouble">
+            <summary>
+            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
+            </summary>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonTextReader.Close">
             <summary>
@@ -3108,6 +3124,11 @@
         <member name="T:Newtonsoft.Json.JsonTextWriter">
             <summary>
             Represents a writer that provides a fast, non-cached, forward-only way of generating JSON data.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonTextWriter.ArrayPool">
+            <summary>
+            Gets or sets the writer's character array pool.
             </summary>
         </member>
         <member name="P:Newtonsoft.Json.JsonTextWriter.Indentation">
@@ -3547,6 +3568,18 @@
             </summary>
             <returns>A <see cref="T:System.Nullable`1"/>.</returns>
         </member>
+        <member name="M:Newtonsoft.Json.JsonValidatingReader.ReadAsDouble">
+            <summary>
+            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
+            </summary>
+            <returns>A <see cref="T:System.Nullable`1"/>.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonValidatingReader.ReadAsBoolean">
+            <summary>
+            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
+            </summary>
+            <returns>A <see cref="T:System.Nullable`1"/>.</returns>
+        </member>
         <member name="M:Newtonsoft.Json.JsonValidatingReader.ReadAsString">
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.String"/>.
@@ -3557,7 +3590,7 @@
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonValidatingReader.ReadAsDateTimeOffset">
             <summary>
@@ -4018,6 +4051,12 @@
             </summary>
             <param name="ws">The string of white space characters.</param>
         </member>
+        <member name="M:Newtonsoft.Json.JsonWriter.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
         <member name="M:Newtonsoft.Json.JsonWriter.SetWriteState(Newtonsoft.Json.JsonToken,System.Object)">
             <summary>
             Sets the state of the JsonWriter,
@@ -4078,6 +4117,21 @@
         <member name="F:Newtonsoft.Json.Linq.CommentHandling.Load">
             <summary>
             Load comments as a <see cref="T:Newtonsoft.Json.Linq.JValue"/> with type <see cref="F:Newtonsoft.Json.Linq.JTokenType.Comment"/>.
+            </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.LineInfoHandling">
+            <summary>
+            Specifies how line information is handled when loading JSON.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.LineInfoHandling.Ignore">
+            <summary>
+            Ignore line information.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.LineInfoHandling.Load">
+            <summary>
+            Load line information.
             </summary>
         </member>
         <member name="T:Newtonsoft.Json.Linq.Extensions">
@@ -6169,44 +6223,6 @@
             </summary>
             <param name="token">The token to read from.</param>
         </member>
-        <member name="M:Newtonsoft.Json.Linq.JTokenReader.ReadAsBytes">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Byte"/>[].
-            </summary>
-            <returns>
-            A <see cref="T:System.Byte"/>[] or a null reference if the next JSON token is null. This method will return <c>null</c> at the end of an array.
-            </returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JTokenReader.ReadAsDecimal">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
-            </summary>
-            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JTokenReader.ReadAsInt32">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
-            </summary>
-            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JTokenReader.ReadAsString">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.String"/>.
-            </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JTokenReader.ReadAsDateTime">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
-            </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JTokenReader.ReadAsDateTimeOffset">
-            <summary>
-            Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
-            </summary>
-            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
         <member name="M:Newtonsoft.Json.Linq.JTokenReader.Read">
             <summary>
             Reads the next JSON token from the stream.
@@ -6782,6 +6798,12 @@
             </summary>
             <value>The JSON comment handling.</value>
         </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.LineInfoHandling">
+            <summary>
+            Gets or sets how JSON line info is handled when loading JSON.
+            </summary>
+            <value>The JSON line info handling.</value>
+        </member>
         <member name="T:Newtonsoft.Json.Linq.MergeArrayHandling">
             <summary>
             Specifies how JSON arrays are merged together.
@@ -6964,6 +6986,11 @@
         <member name="F:Newtonsoft.Json.Required.Always">
             <summary>
             The property must be defined in JSON and cannot be a null value.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Required.DisallowNull">
+            <summary>
+            The property is not required but it cannot be a null value.
             </summary>
         </member>
         <member name="T:Newtonsoft.Json.Schema.Extensions">
@@ -8405,6 +8432,11 @@
             Gets or sets the extension data getter.
             </summary>
         </member>
+        <member name="P:Newtonsoft.Json.Serialization.JsonObjectContract.ExtensionDataValueType">
+            <summary>
+            Gets or sets the extension data value type.
+            </summary>
+        </member>
         <member name="M:Newtonsoft.Json.Serialization.JsonObjectContract.#ctor(System.Type)">
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonObjectContract"/> class.
@@ -8441,9 +8473,9 @@
         </member>
         <member name="P:Newtonsoft.Json.Serialization.JsonProperty.Order">
             <summary>
-            Gets or sets the order of serialization and deserialization of a member.
+            Gets or sets the order of serialization of a member.
             </summary>
-            <value>The numeric order of serialization or deserialization.</value>
+            <value>The numeric order of serialization.</value>
         </member>
         <member name="P:Newtonsoft.Json.Serialization.JsonProperty.UnderlyingName">
             <summary>
@@ -8808,6 +8840,11 @@
             <summary>
             Specifies type name handling options for the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
             </summary>
+            <remarks>
+            <see cref="T:Newtonsoft.Json.TypeNameHandling"/> should be used with caution when your application deserializes JSON from an external source.
+            Incoming types should be validated with a custom <see cref="T:System.Runtime.Serialization.SerializationBinder"/>
+            when deserializing with a value other than <c>TypeNameHandling.None</c>.
+            </remarks>
         </member>
         <member name="F:Newtonsoft.Json.TypeNameHandling.None">
             <summary>

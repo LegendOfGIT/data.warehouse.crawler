@@ -27,7 +27,7 @@
     <tags>Collect Information Internet Web Crawler</tags>
     <dependencies>
       <dependency id="Data.Warehouse" version="1.0.8" />
-      <dependency id="Data.Web" version="1.0.2" />
+      <dependency id="Data.Web" version="1.0.3" />
     </dependencies>
   </metadata>
 </package>
