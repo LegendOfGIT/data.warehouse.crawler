@@ -11,6 +11,7 @@ namespace Data.Warehouse.Crawler
 
         public const string Corellation = "correlation";
         public const string Id = "id";
+        public const string Image = "image";
         public const string Uri = "uri";
 
         public static List<string> Commands = new List<string>
@@ -21,6 +22,7 @@ namespace Data.Warehouse.Crawler
         {
             Corellation,
             Id,
+            Image,
             Uri
         };
         public static List<string> BasicVariables = new List<string>

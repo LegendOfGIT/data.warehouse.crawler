@@ -342,7 +342,12 @@ namespace Data.Warehouse.Crawler
                         sitename = Regex.Split(sitename, @"://")?.Skip(1).FirstOrDefault() ?? string.Empty;
                         token = token.StartsWith(sitename) ? token : $"{sitename}.{token}";
                     }
-
+                    //  Bei Bildern wird ggf. http:// bei '//' ergänzt.
+                    if (new[] { WebcrawlingUtilityConstants.Image }.Any(prop => querytarget.EndsWith($".{prop}")) )
+                    {
+                        var shortcut = "//";
+                        token = token.StartsWith(shortcut) ? $"http:{token}" : token;
+                    }
 
                     content[i] = token;
                 }
